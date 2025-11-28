@@ -22,9 +22,26 @@ const CreateLecture = ({ params }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [videoPreview, setVideoPreview] = useState(null);
+  const [durationSeconds, setDurationSeconds] = useState(null);
   const router = useRouter();
 
   const MAX_FILE_SIZE_MB = 100;
+
+  const extractVideoDuration = (file) =>
+    new Promise((resolve, reject) => {
+      try {
+        const tempVideo = document.createElement("video");
+        tempVideo.preload = "metadata";
+        tempVideo.onloadedmetadata = () => {
+          window.URL.revokeObjectURL(tempVideo.src);
+          resolve(tempVideo.duration);
+        };
+        tempVideo.onerror = () => reject("Unable to read video metadata");
+        tempVideo.src = URL.createObjectURL(file);
+      } catch (err) {
+        reject(err);
+      }
+    });
 
   const handleVideoChange = (event) => {
     try {
@@ -50,8 +67,13 @@ const CreateLecture = ({ params }) => {
       if (videoPreview) URL.revokeObjectURL(videoPreview);
 
       setVideo(selectedVideo);
-      setVideoPreview(URL.createObjectURL(selectedVideo));
+      const previewUrl = URL.createObjectURL(selectedVideo);
+      setVideoPreview(previewUrl);
       setErrors((prev) => ({ ...prev, video: null }));
+
+      extractVideoDuration(selectedVideo)
+        .then((duration) => setDurationSeconds(Math.round(duration)))
+        .catch(() => setDurationSeconds(null));
     } catch (error) {
       console.error("Error handling video upload:", error);
       setErrors((prev) => ({
@@ -86,7 +108,11 @@ const CreateLecture = ({ params }) => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title, videoUrl }),
+          body: JSON.stringify({
+            title,
+            videoUrl,
+            durationSeconds: durationSeconds || 0,
+          }),
           credentials: "include",
         }
       );

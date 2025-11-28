@@ -7,6 +7,10 @@ import styles from "./ProgressCard.module.css";
 import { Play } from "lucide-react";
 
 const ProgressCard = ({ course }) => {
+  const numericProgress = Number(course.progress ?? 0);
+  const clampedProgress = Math.min(100, Math.max(0, numericProgress));
+  const displayProgress = Math.round(clampedProgress);
+
   return (
     <Link href={`/courses/${course.courseId}/progress`}>
       <Card className="overflow-hidden rounded-lg dark:bg-gray-800 bg-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
@@ -25,9 +29,9 @@ const ProgressCard = ({ course }) => {
             <div className={styles.progressBar}>
               <div
                 className={styles.progressFill}
-                style={{ width: `${course.progress}%` }}
+                style={{ width: `${clampedProgress}%` }}
               >
-                {course.progress}%
+                {displayProgress}%
               </div>
             </div>
           </div>

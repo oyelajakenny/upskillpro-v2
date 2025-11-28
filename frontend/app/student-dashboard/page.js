@@ -16,8 +16,8 @@ const StudentDashboard = () => {
   const [stats, setStats] = useState({
     totalCourses: 0,
     inProgress: 0,
-    completed: 0,
-    totalHours: 0,
+    completedLessons: 0,
+    totalLearningSeconds: 0,
   });
 
   const router = useRouter();
@@ -48,24 +48,31 @@ const StudentDashboard = () => {
 
         if (apiResponse.ok) {
           const courses = await apiResponse.json();
-          setEnrolledCourses(courses);
+          const normalizedCourses = courses.map((course) => ({
+            ...course,
+            progress: Number(course.progress ?? 0),
+          }));
+          setEnrolledCourses(normalizedCourses);
 
-          // Calculate stats
-          const totalCourses = courses.length;
-          const completed = courses.filter((c) => c.progress === 100).length;
-          const inProgress = courses.filter(
+          // Calculate stats from enriched API data
+          const totalCourses = normalizedCourses.length;
+          const inProgress = normalizedCourses.filter(
             (c) => c.progress > 0 && c.progress < 100
           ).length;
-          const totalHours = courses.reduce(
-            (sum, c) => sum + (c.duration || 0),
+          const completedLessons = normalizedCourses.reduce(
+            (sum, c) => sum + (c.completedLectures || 0),
+            0
+          );
+          const totalLearningSeconds = normalizedCourses.reduce(
+            (sum, c) => sum + (c.completedDurationSeconds || 0),
             0
           );
 
           setStats({
             totalCourses,
             inProgress,
-            completed,
-            totalHours,
+            completedLessons,
+            totalLearningSeconds,
           });
         } else {
           const errorText = await apiResponse.json();
@@ -82,6 +89,23 @@ const StudentDashboard = () => {
 
     fetchEnrolledCourses();
   }, [isAuthenticated, router]);
+
+  const formatLearningTime = (seconds) => {
+    if (!seconds || seconds <= 0) {
+      return "0h";
+    }
+    const totalMinutes = Math.floor(seconds / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours > 0 && minutes > 0) {
+      return `${hours}h ${minutes}m`;
+    }
+    if (hours > 0) {
+      return `${hours}h`;
+    }
+    return `${minutes}m`;
+  };
 
   if (loading) {
     return <LearningLoading />;
@@ -142,13 +166,15 @@ const StudentDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Completed
+              Completed Lessons
             </CardTitle>
             <Award className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.completed}</div>
-            <p className="text-xs text-gray-500 mt-1">Courses finished</p>
+            <div className="text-2xl font-bold">
+              {stats.completedLessons}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Lessons finished</p>
           </CardContent>
         </Card>
 
@@ -160,8 +186,10 @@ const StudentDashboard = () => {
             <Clock className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalHours}h</div>
-            <p className="text-xs text-gray-500 mt-1">Total content</p>
+            <div className="text-2xl font-bold">
+              {formatLearningTime(stats.totalLearningSeconds)}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Total learning time</p>
           </CardContent>
         </Card>
       </div>
