@@ -13,7 +13,7 @@ const createLecture = async (req, res) => {
     return res.status(404).json({ message: "courseID is not found" });
   }
 
-  const { title, videoUrl } = req.body;
+  const { title, videoUrl, durationSeconds } = req.body;
 
   try {
     const course = await CourseRepository.findById(courseId);
@@ -26,6 +26,10 @@ const createLecture = async (req, res) => {
       title,
       videoUrl,
       createdAt: new Date().toISOString(),
+      durationSeconds:
+        typeof durationSeconds === "number" && durationSeconds >= 0
+          ? durationSeconds
+          : null,
     });
 
     res.status(201).json(lecture);
@@ -57,6 +61,7 @@ const getLecturesByCourseId = async (req, res) => {
       title: lecture.title,
       videoUrl: lecture.videoUrl,
       videoURL: generateS3Url(lecture.videoUrl),
+      durationSeconds: lecture.durationSeconds ?? null,
       createdAt: lecture.createdAt,
     }));
 
