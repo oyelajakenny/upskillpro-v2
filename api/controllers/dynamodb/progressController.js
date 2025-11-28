@@ -176,17 +176,34 @@ const courseWithProgress = async (req, res) => {
     const learningProgress = enrollments.map((enrollment, index) => {
       const lectures = lecturesResults[index];
       const totalLectures = lectures.length;
-      const completedLectures = enrollment.progress.filter((lectureId) =>
-        lectures.some((lecture) => lecture.lectureId === lectureId),
-      ).length;
+      const completedLectureIds = new Set(enrollment.progress);
+      const completedLectures = lectures.filter((lecture) =>
+        completedLectureIds.has(lecture.lectureId),
+      );
+
       const progressPercentage =
-        totalLectures > 0 ? (completedLectures / totalLectures) * 100 : 0;
+        totalLectures > 0
+          ? (completedLectures.length / totalLectures) * 100
+          : 0;
+
+      const totalDurationSeconds = lectures.reduce(
+        (sum, lecture) => sum + (lecture.durationSeconds || 0),
+        0,
+      );
+      const completedDurationSeconds = completedLectures.reduce(
+        (sum, lecture) => sum + (lecture.durationSeconds || 0),
+        0,
+      );
 
       return {
         courseId: enrollment.courseId,
         title: enrollment.courseTitle,
         imageUrl: generateS3Url(enrollment.courseImageKey),
-        progress: progressPercentage.toFixed(2),
+        progress: Number(progressPercentage.toFixed(2)),
+        totalLectures,
+        completedLectures: completedLectures.length,
+        totalDurationSeconds,
+        completedDurationSeconds,
       };
     });
 

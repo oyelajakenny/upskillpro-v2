@@ -8,7 +8,13 @@ import {
 import { v4 as uuidv4 } from "uuid";
 
 export class LectureRepository {
-  static async create({ courseId, title, videoUrl, createdAt }) {
+  static async create({
+    courseId,
+    title,
+    videoUrl,
+    createdAt,
+    durationSeconds,
+  }) {
     const lectureId = uuidv4();
     const item = {
       PK: `COURSE#${courseId}`,
@@ -19,6 +25,7 @@ export class LectureRepository {
       title,
       videoUrl,
       createdAt: createdAt || new Date().toISOString(),
+      durationSeconds: durationSeconds ?? null,
     };
 
     await dynamoDb.send(
