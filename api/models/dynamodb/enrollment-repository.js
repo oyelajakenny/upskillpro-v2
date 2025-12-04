@@ -105,7 +105,26 @@ export class EnrollmentRepository {
     return result.Count || 0;
   }
 
-  static async updateProgress(userId, courseId, progress) {
+  static async updateProgress(
+    userId,
+    courseId,
+    progress,
+    { completedAt, clearCompletedAt = false } = {},
+  ) {
+    let updateExpression = "SET progress = :progress";
+    const expressionAttributeValues = {
+      ":progress": progress,
+    };
+
+    if (completedAt) {
+      updateExpression += ", completedAt = :completedAt";
+      expressionAttributeValues[":completedAt"] = completedAt;
+    }
+
+    if (clearCompletedAt) {
+      updateExpression += " REMOVE completedAt";
+    }
+
     const result = await dynamoDb.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
@@ -113,10 +132,8 @@ export class EnrollmentRepository {
           PK: `USER#${userId}`,
           SK: `ENROLLMENT#${courseId}`,
         },
-        UpdateExpression: "SET progress = :progress",
-        ExpressionAttributeValues: {
-          ":progress": progress,
-        },
+        UpdateExpression: updateExpression,
+        ExpressionAttributeValues: expressionAttributeValues,
         ReturnValues: "ALL_NEW",
       }),
     );

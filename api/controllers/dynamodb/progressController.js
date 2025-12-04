@@ -43,6 +43,50 @@ const getProgress = async (req, res) => {
   }
 };
 
+const getEnrollmentDetails = async (req, res) => {
+  try {
+    const userId = req.user.sub;
+    const courseId = req.params.id;
+
+    if (!userId) {
+      return res.status(400).json({ message: "Invalid or missing userId." });
+    }
+    if (!courseId) {
+      return res.status(400).json({ message: "Invalid or missing courseId." });
+    }
+
+    const enrollment = await EnrollmentRepository.findByUserAndCourse(
+      userId,
+      courseId,
+    );
+
+    if (!enrollment) {
+      return res.status(404).json({ message: "Enrollment not found." });
+    }
+
+    // Get total lectures to determine completion status
+    const lectures = await LectureRepository.findByCourse(courseId);
+    const totalLectures = lectures.length;
+    const completedCount = enrollment.progress?.length || 0;
+    const isCompleted = totalLectures > 0 && completedCount === totalLectures;
+
+    res.status(200).json({
+      courseId: enrollment.courseId,
+      courseTitle: enrollment.courseTitle,
+      progress: enrollment.progress,
+      completedAt: enrollment.completedAt || null,
+      isCompleted,
+      totalLectures,
+      completedCount,
+    });
+  } catch (error) {
+    console.error("Unexpected error:", error.message);
+    return res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};
+
 const updateProgress = async (req, res) => {
   const userId = req.user.sub;
   const courseId = req.params.id;
@@ -67,11 +111,21 @@ const updateProgress = async (req, res) => {
     if (!enrollment.progress.includes(lectureId)) {
       enrollment.progress.push(lectureId);
 
-      await EnrollmentRepository.updateProgress(
-        userId,
-        courseId,
-        enrollment.progress,
-      );
+      // Check if course is now completed (all lectures done)
+      const lectures = await LectureRepository.findByCourse(courseId);
+      const totalLectures = lectures.length;
+      const isNowCompleted =
+        totalLectures > 0 && enrollment.progress.length === totalLectures;
+
+      // Set completedAt only if course is now completed and wasn't before
+      const completedAt =
+        isNowCompleted && !enrollment.completedAt
+          ? new Date().toISOString()
+          : undefined;
+
+      await EnrollmentRepository.updateProgress(userId, courseId, enrollment.progress, {
+        completedAt,
+      });
     }
 
     return res
@@ -106,11 +160,17 @@ const markAllCompleted = async (req, res) => {
       return res.status(404).json({ message: "Enrollment not found." });
     }
 
-    await EnrollmentRepository.updateProgress(userId, courseId, allLectureIds);
+    // Set completedAt only if not already completed
+    const completedAt = enrollment.completedAt || new Date().toISOString();
+
+    await EnrollmentRepository.updateProgress(userId, courseId, allLectureIds, {
+      completedAt,
+    });
 
     return res.status(200).json({
       message: "All lectures marked as completed.",
       progress: allLectureIds,
+      completedAt,
     });
   } catch (error) {
     console.error("Error marking all lectures as completed:", error);
@@ -138,7 +198,10 @@ const removeAllLectureId = async (req, res) => {
       return res.status(404).json({ message: "Enrollment not found." });
     }
 
-    await EnrollmentRepository.updateProgress(userId, courseId, []);
+    // Clear completedAt when resetting progress
+    await EnrollmentRepository.updateProgress(userId, courseId, [], {
+      clearCompletedAt: true,
+    });
 
     return res.status(200).json({
       message: "All lectures are removed.",
@@ -218,6 +281,7 @@ const courseWithProgress = async (req, res) => {
 
 export {
   getProgress,
+  getEnrollmentDetails,
   updateProgress,
   markAllCompleted,
   removeAllLectureId,

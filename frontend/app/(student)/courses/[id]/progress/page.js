@@ -202,10 +202,41 @@ const CourseProgress = () => {
         throw new Error("Invalid user or course data");
       }
 
+      // Fetch enrollment details to get the actual completion date
+      const enrollmentResponse = await fetch(
+        `${API_URL}/api/enroll/${id}/details`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      let completionDate;
+      if (enrollmentResponse.ok) {
+        const enrollmentData = await enrollmentResponse.json();
+        if (enrollmentData.completedAt) {
+          // Format the completion date consistently
+          completionDate = new Date(enrollmentData.completedAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        }
+      }
+
+      // Fallback to current date if no completion date found
+      if (!completionDate) {
+        completionDate = new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
       const certificateData = {
         name: user.name,
         course: selectedCourse.title,
-        date: new Date().toLocaleDateString(),
+        date: completionDate,
       };
 
       const response = await fetch(

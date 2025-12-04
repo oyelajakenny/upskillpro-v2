@@ -5,6 +5,7 @@ import authorizeRole from "../../middlewares/authorizeRole.js";
 import { createEnrollment } from "../../controllers/dynamodb/enrollmentController.js";
 import { getEnrolledCourses } from "../../controllers/dynamodb/enrollmentController.js";
 import { getProgress } from "../../controllers/dynamodb/progressController.js";
+import { getEnrollmentDetails } from "../../controllers/dynamodb/progressController.js";
 import { updateProgress } from "../../controllers/dynamodb/progressController.js";
 import { markAllCompleted } from "../../controllers/dynamodb/progressController.js";
 import { removeAllLectureId } from "../../controllers/dynamodb/progressController.js";
@@ -31,6 +32,13 @@ enrollRouter.get(
   authenticateToken,
   authorizeRole("student"),
   getProgress
+);
+
+enrollRouter.get(
+  "/:id/details",
+  authenticateToken,
+  authorizeRole("student"),
+  getEnrollmentDetails
 );
 enrollRouter.put(
   "/:id/progress",

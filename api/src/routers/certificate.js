@@ -141,7 +141,7 @@ certificateRouter.post("/generate-certificate", async (req, res) => {
     });
 
     // Date
-    const dateText = `Issued on ${date}`;
+    const dateText = `Completed on ${date}`;
     const dateWidth = font.widthOfTextAtSize(dateText, 14);
     page.drawText(dateText, {
       x: (width - dateWidth) / 2,
