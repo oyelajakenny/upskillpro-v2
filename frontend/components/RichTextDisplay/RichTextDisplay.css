@@ -1,0 +1,286 @@
+/* Rich Text Display Styles */
+/* These styles ensure the rendered HTML looks consistent across the app */
+
+.rich-text-display {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #374151;
+}
+
+/* Headings */
+.rich-text-display h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  color: #1a202c;
+  line-height: 1.3;
+}
+
+.rich-text-display h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.875rem;
+  color: #1a202c;
+  line-height: 1.35;
+}
+
+.rich-text-display h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+  color: #1a202c;
+  line-height: 1.4;
+}
+
+.rich-text-display h4 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-top: 0.875rem;
+  margin-bottom: 0.625rem;
+  color: #1a202c;
+  line-height: 1.45;
+}
+
+.rich-text-display h5 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+}
+
+.rich-text-display h6 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 0.625rem;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+}
+
+/* First heading shouldn't have top margin */
+.rich-text-display > h1:first-child,
+.rich-text-display > h2:first-child,
+.rich-text-display > h3:first-child,
+.rich-text-display > h4:first-child,
+.rich-text-display > h5:first-child,
+.rich-text-display > h6:first-child {
+  margin-top: 0;
+}
+
+/* Paragraphs */
+.rich-text-display p {
+  margin-bottom: 1rem;
+}
+
+.rich-text-display p:last-child {
+  margin-bottom: 0;
+}
+
+/* Text Formatting */
+.rich-text-display strong,
+.rich-text-display b {
+  font-weight: 600;
+}
+
+.rich-text-display em,
+.rich-text-display i {
+  font-style: italic;
+}
+
+.rich-text-display u {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rich-text-display s,
+.rich-text-display strike {
+  text-decoration: line-through;
+}
+
+/* Lists */
+.rich-text-display ul,
+.rich-text-display ol {
+  margin-bottom: 1rem;
+  padding-left: 1.75rem;
+}
+
+.rich-text-display ul {
+  list-style-type: disc;
+}
+
+.rich-text-display ol {
+  list-style-type: decimal;
+}
+
+.rich-text-display li {
+  margin-bottom: 0.375rem;
+}
+
+.rich-text-display li:last-child {
+  margin-bottom: 0;
+}
+
+/* Nested lists */
+.rich-text-display ul ul,
+.rich-text-display ol ol,
+.rich-text-display ul ol,
+.rich-text-display ol ul {
+  margin-top: 0.375rem;
+  margin-bottom: 0;
+}
+
+.rich-text-display ul ul {
+  list-style-type: circle;
+}
+
+.rich-text-display ul ul ul {
+  list-style-type: square;
+}
+
+/* Links */
+.rich-text-display a {
+  color: #3182ce;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.rich-text-display a:hover {
+  color: #2c5282;
+}
+
+/* Blockquotes */
+.rich-text-display blockquote {
+  border-left: 4px solid #4a5568;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+  background-color: #f7fafc;
+  border-radius: 0 8px 8px 0;
+  color: #4a5568;
+  font-style: italic;
+}
+
+.rich-text-display blockquote p {
+  margin-bottom: 0;
+}
+
+/* Code Blocks */
+.rich-text-display pre {
+  background-color: #1a202c;
+  color: #e2e8f0;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-family: "Fira Code", "Consolas", "Monaco", monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.rich-text-display code {
+  font-family: "Fira Code", "Consolas", "Monaco", monospace;
+  font-size: 0.875em;
+  background-color: #edf2f7;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  color: #c53030;
+}
+
+.rich-text-display pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+/* Images */
+.rich-text-display img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Videos and Iframes */
+.rich-text-display video,
+.rich-text-display iframe {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.rich-text-display iframe {
+  aspect-ratio: 16/9;
+  width: 100%;
+  height: auto;
+}
+
+/* Quill specific classes */
+.rich-text-display .ql-align-center {
+  text-align: center;
+}
+
+.rich-text-display .ql-align-right {
+  text-align: right;
+}
+
+.rich-text-display .ql-align-justify {
+  text-align: justify;
+}
+
+.rich-text-display .ql-indent-1 {
+  padding-left: 2rem;
+}
+
+.rich-text-display .ql-indent-2 {
+  padding-left: 4rem;
+}
+
+.rich-text-display .ql-indent-3 {
+  padding-left: 6rem;
+}
+
+.rich-text-display .ql-indent-4 {
+  padding-left: 8rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .rich-text-display {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .rich-text-display h1 {
+    font-size: 1.75rem;
+  }
+
+  .rich-text-display h2 {
+    font-size: 1.5rem;
+  }
+
+  .rich-text-display h3 {
+    font-size: 1.25rem;
+  }
+
+  .rich-text-display h4 {
+    font-size: 1.125rem;
+  }
+
+  .rich-text-display ul,
+  .rich-text-display ol {
+    padding-left: 1.5rem;
+  }
+
+  .rich-text-display blockquote {
+    padding: 0.75rem 1rem;
+  }
+
+  .rich-text-display pre {
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
+  }
+}

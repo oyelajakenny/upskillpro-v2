@@ -126,12 +126,17 @@ const EditPage = ({ params }) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  const handleDescriptionChange = (value) => {
+    setFormData((prevData) => ({ ...prevData, description: value }));
+  };
   return (
     <>
       <EditCourseForm
         formData={formData}
         onSubmit={handleSubmit}
         onInputChange={handleInputChange}
+        onDescriptionChange={handleDescriptionChange}
         loading={loading}
         error={error}
         categories={categories}

@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Button from "@mui/material/Button";
 import {
@@ -14,10 +15,12 @@ import {
   MenuItem,
   FormHelperText,
 } from "@mui/material";
+import RichTextEditor from "@/components/RichTextEditor";
 const EditCourseForm = ({
   formData,
   onSubmit,
   onInputChange,
+  onDescriptionChange,
   loading,
   error,
   categories = [],
@@ -54,19 +57,30 @@ const EditCourseForm = ({
                 required
               />
 
-              <TextField
-                fullWidth
-                label="Description"
-                name="description"
-                type="text"
-                value={formData.description}
-                margin="normal"
-                size="small"
-                multiline
-                rows={4}
-                onChange={onInputChange}
-                required
-              />
+              <Box sx={{ mt: 2, mb: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mb: 1,
+                    fontWeight: 500,
+                    color: "#1a202c",
+                  }}
+                >
+                  Description *
+                </Typography>
+                <RichTextEditor
+                  value={formData.description}
+                  onChange={
+                    onDescriptionChange ||
+                    ((val) =>
+                      onInputChange({
+                        target: { name: "description", value: val },
+                      }))
+                  }
+                  placeholder="Describe your course. Use formatting to highlight key features, learning outcomes, and prerequisites..."
+                  minHeight={200}
+                />
+              </Box>
 
               <FormControl fullWidth margin="normal" size="small">
                 <InputLabel id="category-label">Category</InputLabel>

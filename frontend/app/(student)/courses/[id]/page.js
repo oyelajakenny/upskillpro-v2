@@ -11,6 +11,7 @@ import SocialButtons from "@/app/_components/HomePageComponents/SocialButtons";
 import RatingDisplay from "@/components/RatingDisplay";
 import RatingInput from "@/components/RatingInput";
 import ReviewList from "@/components/ReviewList";
+import RichTextDisplay from "@/components/RichTextDisplay";
 import {
   submitRating,
   getMyRating,
@@ -211,7 +212,11 @@ const CoursePage = () => {
               />
             </div>
             <div className="bg-white p-5 rounded-lg shadow-md mb-5">
-              <p className="text-gray-600 mb-3">{course.description}</p>
+              <h3 className="text-xl font-semibold mb-4 text-gray-800">About This Course</h3>
+              <RichTextDisplay
+                content={course.description}
+                fallbackText="No course description available."
+              />
             </div>
 
             {/* Rating Display Section */}

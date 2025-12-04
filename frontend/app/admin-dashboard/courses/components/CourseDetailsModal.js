@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import RichTextDisplay from "@/components/RichTextDisplay";
 import {
   BookOpen,
   User,
@@ -204,9 +205,13 @@ const CourseDetailsModal = ({ course, isOpen, onClose }) => {
                 <h2 className="text-xl font-bold text-gray-900 mb-2">
                   {courseDetails.title}
                 </h2>
-                <p className="text-gray-600 mb-3">
-                  {courseDetails.description}
-                </p>
+                <div className="mb-3">
+                  <RichTextDisplay
+                    content={courseDetails.description}
+                    className="text-sm"
+                    fallbackText="No description available."
+                  />
+                </div>
                 <div className="flex items-center space-x-4 mb-3">
                   <Badge className={getStatusBadgeColor(courseDetails.status)}>
                     {courseDetails.status}

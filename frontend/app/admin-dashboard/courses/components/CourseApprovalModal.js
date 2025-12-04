@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import RichTextDisplay from "@/components/RichTextDisplay";
 import {
   CheckCircle,
   XCircle,
@@ -174,9 +175,13 @@ const CourseApprovalModal = ({ course, isOpen, onClose, onCourseUpdate }) => {
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     {course.title}
                   </h3>
-                  <p className="text-gray-600 mb-3 line-clamp-2">
-                    {course.description}
-                  </p>
+                  <div className="mb-3 max-h-24 overflow-y-auto">
+                    <RichTextDisplay
+                      content={course.description}
+                      className="text-sm"
+                      fallbackText="No description available."
+                    />
+                  </div>
                   <div className="flex items-center space-x-4 mb-3">
                     <Badge className={getStatusBadgeColor(course.status)}>
                       {course.status}

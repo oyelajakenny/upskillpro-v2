@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -20,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import RichTextEditor from "@/components/RichTextEditor";
 import {
   Edit,
   Save,
@@ -228,22 +228,17 @@ const CourseEditModal = ({ course, isOpen, onClose, onCourseUpdate }) => {
               </div>
 
               <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
+                <Label htmlFor="description" className="mb-2 block">
+                  Description
+                </Label>
+                <RichTextEditor
                   value={formData.description}
-                  onChange={(e) =>
-                    handleInputChange("description", e.target.value)
-                  }
-                  placeholder="Enter course description"
-                  rows={4}
-                  className={errors.description ? "border-red-500" : ""}
+                  onChange={(value) => handleInputChange("description", value)}
+                  placeholder="Enter course description with rich formatting..."
+                  error={!!errors.description}
+                  helperText={errors.description}
+                  minHeight={180}
                 />
-                {errors.description && (
-                  <p className="text-sm text-red-600 mt-1">
-                    {errors.description}
-                  </p>
-                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

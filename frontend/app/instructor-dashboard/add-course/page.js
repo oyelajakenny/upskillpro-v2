@@ -28,6 +28,7 @@ import {
   MenuItem,
   FormHelperText,
 } from "@mui/material";
+import RichTextEditor from "@/components/RichTextEditor";
 
 const CreateCourse = () => {
   const [title, setTitle] = useState("");
@@ -83,7 +84,7 @@ const CreateCourse = () => {
       errors.description = "Please provide a valid description";
     if (isNaN(price) || price < 0)
       errors.price = "Please provide a valid price";
-    // if (!categoryId) errors.categoryId = "Please select a category";
+    if (!categoryId) errors.categoryId = "Please select a category";
     if (!image) errors.image = "Please upload an image";
     return errors;
   };
@@ -191,17 +192,26 @@ const CreateCourse = () => {
               />
 
               {/* Course Description */}
-              <TextField
-                fullWidth
-                label="Description"
-                multiline
-                rows={4}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                error={!!errors.description}
-                helperText={errors.description}
-                required
-              />
+              <Box>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mb: 1,
+                    fontWeight: 500,
+                    color: errors.description ? "#d32f2f" : "#1a202c",
+                  }}
+                >
+                  Description *
+                </Typography>
+                <RichTextEditor
+                  value={description}
+                  onChange={setDescription}
+                  placeholder="Describe your course. Use formatting to highlight key features, learning outcomes, and prerequisites..."
+                  error={!!errors.description}
+                  helperText={errors.description}
+                  minHeight={250}
+                />
+              </Box>
 
               {/* Course Price */}
               <TextField
@@ -221,7 +231,7 @@ const CreateCourse = () => {
               />
 
               {/* Category Selection */}
-              <FormControl fullWidth error={!!errors.categoryId} >
+              <FormControl fullWidth error={!!errors.categoryId}>
                 <InputLabel id="category-label">Category</InputLabel>
                 <Select
                   labelId="category-label"

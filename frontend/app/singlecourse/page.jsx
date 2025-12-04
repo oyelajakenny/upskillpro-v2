@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import VideoPlayer from "../student-dashboard/components/VideoPlayer";
+import RichTextDisplay from "@/components/RichTextDisplay";
 
 const courses = [
   {
@@ -68,7 +69,10 @@ const CourseGrid = () => {
                     {course.instructor}
                   </span>
                 </h3>
-                <p className="text-gray-400 mb-3">{course.description}</p>
+                <RichTextDisplay
+                  content={course.description}
+                  fallbackText="No description available."
+                />
               </div>
               <div className="bg-white p-5 rounded-lg shadow-md">
                 <h4 className="text-1xl font-semibold mt-4 bg-green-100 text-green-600 w-fit px-5">

@@ -1,6 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Quill Editor Styles */
+@import "quill/dist/quill.snow.css";
 @layer base {
   :root {
     --radius: 0.5rem
